@@ -1,0 +1,35 @@
+xst -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -ifn bpm_x.xst -ofn bpm_x.syr
+xst -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -ifn bpm_x.xst -ofn bpm_x.syr
+xst -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -ifn bpm_x.xst -ofn bpm_x.syr
+xst -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -ifn bpm_x.xst -ofn bpm_x.syr
+ngdbuild -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -dd _ngo -nt timestamp -uc "bpm_x.ucf" -p xc3s400-pq208-4 "bpm_x.ngc" bpm_x.ngd
+xst -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -ifn bpm_x.xst -ofn bpm_x.syr
+xst -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -ifn bpm_x.xst -ofn bpm_x.syr
+xst -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -ifn bpm_x.xst -ofn bpm_x.syr
+ngdbuild -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -dd _ngo -nt timestamp -uc "bpm_x.ucf" -p xc3s400-pq208-4 "bpm_x.ngc" bpm_x.ngd
+map -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -p xc3s400-pq208-4 -cm area -pr b -k 4 -c 100 -o bpm_x_map.ncd bpm_x.ngd bpm_x.pcf
+par -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -w -intstyle ise -ol std -t 1 bpm_x_map.ncd bpm_x.ncd bpm_x.pcf
+trce -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -e 3 -s 4 -xml bpm_x bpm_x.ncd -o bpm_x.twr bpm_x.pcf -ucf bpm_x.ucf
+bitgen -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -f bpm_x.ut bpm_x.ncd
+ngdbuild -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -dd _ngo -nt timestamp -uc "bpm_x.ucf" -p xc3s400-pq208-4 "bpm_x.ngc" bpm_x.ngd
+map -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -p xc3s400-pq208-4 -cm area -pr b -k 4 -c 100 -o bpm_x_map.ncd bpm_x.ngd bpm_x.pcf
+par -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -w -intstyle ise -ol std -t 1 bpm_x_map.ncd bpm_x.ncd bpm_x.pcf
+trce -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -e 3 -s 4 -xml bpm_x bpm_x.ncd -o bpm_x.twr bpm_x.pcf -ucf bpm_x.ucf
+bitgen -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -f bpm_x.ut bpm_x.ncd
+xst -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -ifn bpm_x.xst -ofn bpm_x.syr
+ngdbuild -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -dd _ngo -nt timestamp -uc "bpm_x.ucf" -p xc3s400-pq208-4 "bpm_x.ngc" bpm_x.ngd
+map -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -p xc3s400-pq208-4 -cm area -pr b -k 4 -c 100 -o bpm_x_map.ncd bpm_x.ngd bpm_x.pcf
+par -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -w -intstyle ise -ol std -t 1 bpm_x_map.ncd bpm_x.ncd bpm_x.pcf
+trce -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -e 3 -s 4 -xml bpm_x bpm_x.ncd -o bpm_x.twr bpm_x.pcf -ucf bpm_x.ucf
+bitgen -ise "F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise" -intstyle ise -f bpm_x.ut bpm_x.ncd
+xst -intstyle ise -ifn "/afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x/bpm_x.xst" -ofn "/afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x/bpm_x.syr" 
+xst -intstyle ise -ifn "/afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x/bpm_x.xst" -ofn "/afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x/bpm_x.syr" 
+xst -intstyle ise -ifn "/afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x/bpm_x.xst" -ofn "/afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x/bpm_x.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc bpm_x.ucf -p xc3s400-pq208-4 bpm_x.ngc bpm_x.ngd  
+map -intstyle ise -p xc3s400-pq208-4 -cm area -ir off -pr b -c 100 -o bpm_x_map.ncd bpm_x.ngd bpm_x.pcf 
+par -w -intstyle ise -ol high -t 1 bpm_x_map.ncd bpm_x.ncd bpm_x.pcf 
+xst -intstyle ise -ifn "/afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x/bpm_x.xst" -ofn "/afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x/bpm_x.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc bpm_x.ucf -p xc3s400-pq208-4 bpm_x.ngc bpm_x.ngd  
+map -intstyle ise -p xc3s400-pq208-4 -cm area -ir off -pr b -c 100 -o bpm_x_map.ncd bpm_x.ngd bpm_x.pcf 
+par -w -intstyle ise -ol high -t 1 bpm_x_map.ncd bpm_x.ncd bpm_x.pcf 
+bitgen -intstyle ise -f bpm_x.ut bpm_x.ncd 

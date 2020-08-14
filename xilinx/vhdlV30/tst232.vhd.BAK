@@ -1,0 +1,164 @@
+-----------------------------------------------------------------
+--                                                             --
+-----------------------------------------------------------------
+--
+--      tst232 - 
+--
+--      Copyright(c) SLAC 2000
+--
+--      Author: Jeff Olsen
+--      Created on: 10/24/2006 9:54:02 AM
+--      Last change: JO 10/26/2006 11:24:22 AM
+--
+-- Test for tx/rx modules
+
+-- Test side
+
+Library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+
+
+
+library work;
+use work.bpm.all;
+
+
+Entity tst232 is
+Port (
+	clk : in std_logic;
+    sysClk : in std_logic;
+    LocalClk : in std_logic;
+    Reset : in std_logic;
+
+	Send : in std_logic;
+   TxData : in std_logic_vector(7 downto 0);
+
+	RxData : out std_logic_vector(7 downto 0);
+    RxDone : out std_logic;
+
+    Cal_Init : in std_logic
+);
+
+end tst232;
+
+
+Architecture Behaviour of tst232 is
+
+signal RxParity : std_logic;
+
+signal TxDone : std_logic;
+signal n_TxOut : std_logic;
+signal TxOut : std_logic;
+signal n_RxDin : std_logic;
+signal RxDin : std_logic;
+signal n_QCs  : std_logic_vector(3 downto 0);
+signal QClk : std_logic;
+signal QDOut : std_logic;
+signal QDIN : std_logic;
+
+signal Prog_TDI : std_logic;
+signal Prog_TDO : std_logic;
+signal Prog_TMS : std_logic;
+signal Prog_TCK : std_logic;
+signal Sel_Sec : std_logic;
+signal Sel_Clk : std_logic;
+signal Reboot : std_logic;
+
+signal CAL_ATT	:  std_logic_vector(5 downto 1);
+signal CAL_SW	:  std_logic_vector(4 downto 1);
+signal  VAPC	:  std_logic;
+
+signal	LMTR_Pulse		:  std_logic;
+signal	LMTR_Long_Rst	:  std_logic;
+signal	LMTR_Fast_Rst	:  std_logic;
+
+signal	ATT_Cntl4B		:  std_logic_vector(4 downto 1);
+signal	ATT_Cntl4A		:  std_logic_vector(4 downto 1);
+signal	ATT_Cntl3B		:  std_logic_vector(4 downto 1);
+signal	ATT_Cntl3A		:  std_logic_vector(4 downto 1);
+signal	ATT_Cntl2B		:  std_logic_vector(4 downto 1);
+signal	ATT_Cntl2A		:  std_logic_vector(4 downto 1);
+signal	ATT_Cntl1B		:  std_logic_vector(4 downto 1);
+signal	ATT_Cntl1A		:  std_logic_vector(4 downto 1);
+
+begin
+    
+    
+n_TxOut <= Not(TxOut);
+n_RxDin <= Not(RxDin);
+
+u_TestRx: rs232_rx 
+Port map (
+	RxClk => clk,
+	Reset 	=> Reset,
+	RxDin 	=> RxDin,
+	RxData 	=> Rxdata,
+	RxDone	=> RxDone,
+	RxParity => RxParity
+	);
+
+u_TestTx: rs232_tx 
+Port map (
+	TxCLK	=> clk,
+	Reset 	=> reset,
+	Xmit	=> Send,
+	Data	=> TxData,
+	TxDone	=> TxDone,
+	TxOut	=> TxOut
+	);
+
+
+-- BPM Side
+
+u_bpm: bpm_x
+Port map (
+	Sys_Clock 		=> SysClk,
+    Local_Clock 	=> LocalClk,
+	Reset 			=> Reset,
+    Cal_Init		=> Cal_Init,
+
+-- QSPI
+	n_QSPI_CS		=> n_QCs,
+    Qspi_CLK		=> QClk,
+    Qspi_DOut		=> QDOut,
+    Qspi_DIn		=> QDin,
+
+-- RS232
+	n_RS232_TX		=> n_RxDin,
+    n_RS232_RX	   	=> n_TxOut,
+
+-- Reboot
+	PROG_TDI		=> Prog_TDI,
+	PROG_TDO		=> Prog_TDO,
+	PROG_TMS		=> Prog_TMS,
+	PROG_TCK		=> Prog_TCK,
+	SEL_SEC			=> Sel_Sec,
+	SEL_CLK			=> Sel_Clk,
+	Reboot			=> Reboot,
+
+-- Calibrator
+	CAL_ATT			=> Cal_Att,
+	CAL_SW			=> Cal_Sw,
+    VAPC			=> VAPC,
+
+-- Limiter
+	LMTR_Pulse		=> Lmtr_Pulse,
+	LMTR_Long_Rst	=> Lmtr_Long_Rst,
+	LMTR_Fast_Rst	=> Lmtr_Fast_Rst,
+
+-- Attenuator controls
+	ATT_Cntl4B		=> Att_cntl4b,
+	ATT_Cntl4A		=> Att_cntl4a,
+	ATT_Cntl3B		=> Att_cntl3b,
+	ATT_Cntl3A		=> Att_cntl3a,
+	ATT_Cntl2B		=> Att_cntl2b,
+	ATT_Cntl2A		=> Att_cntl2a,
+	ATT_Cntl1B		=> Att_cntl1b,
+	ATT_Cntl1A		=> Att_cntl1a
+    );
+
+
+end behaviour;
+
+

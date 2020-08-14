@@ -1,0 +1,17 @@
+PROMGEN: Xilinx Prom Generator J.40
+Copyright (c) 1995-2007 Xilinx, Inc.  All rights reserved.
+
+promgen -w -p mcs -c FF -o F:\LCLS\BPM_digital\xilinx\bpm_x_V2x\//bpm_x_V2x -u 0 F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x.bit -x xcf02s 
+
+PROM F:\LCLS\BPM_digital\xilinx\bpm_x_V2x\//bpm_x_V2x.prm map: Tue Feb 05 16:46:21 2008
+
+Calculating PROM checksum with fill value ff
+
+Format        Mcs86 (32-bit)
+Size          256K
+PROM start    0000:0000
+PROM end      0003:ffff
+PROM checksum 00cedd64
+
+        Addr1        Addr2                     Date File(s)
+    0000:0000    0003:3da7     Feb 05 16:44:46 2008 F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x.bit

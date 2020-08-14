@@ -1,0 +1,24 @@
+m255
+13
+cModel Technology
+dF:\LCLS\BPM_digital\xilinx\bpm_x_V2x
+Pbpm
+DP ieee std_logic_arith GJbAT?7@hRQU9IQ702DT]2
+DP ieee std_logic_unsigned hEMVMlaNCR^<OOoVNV;m90
+DP ieee std_logic_1164 GH1=`jDDBJ=`LM;:Ak`kf2
+w1197654177
+8../../vhdlV20/bpm_pkg.vhd
+F../../vhdlV20/bpm_pkg.vhd
+l0
+L58
+V5ZH9Xhm]OnMSz[6WWb6602
+OX;C;6.2g;35
+31
+M3 ieee std_logic_1164
+M2 ieee std_logic_unsigned
+M1 ieee std_logic_arith
+o-explicit -93 -O0
+tExplicit 1
+Etransmit
+o-explicit -93 -O0
+tExplicit 1

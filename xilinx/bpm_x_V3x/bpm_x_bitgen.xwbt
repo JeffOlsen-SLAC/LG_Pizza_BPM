@@ -1,0 +1,8 @@
+INTSTYLE=ise
+INFILE=/afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x/bpm_x.ncd
+OUTFILE=/afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x/bpm_x.bit
+FAMILY=Spartan3
+PART=xc3s400-4pq208
+WORKINGDIR=/afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x
+LICENSE=ISE
+USER_INFO=175331046_1777551396_210719377_501

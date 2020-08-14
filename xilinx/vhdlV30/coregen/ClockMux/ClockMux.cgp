@@ -1,0 +1,20 @@
+# Date: Fri Aug 04 21:28:15 2006
+SET flowvendor = Other
+SET vhdlsim = True
+SET verilogsim = False
+SET workingdirectory = F:\LCLS\BPM_digital\vhdl\coregen\ClockMux\tmp
+SET speedgrade = -5
+SET simulationfiles = Behavioral
+SET asysymbol = False
+SET addpads = False
+SET device = xc3s400
+SET implementationfiletype = Edif
+SET busformat = BusFormatAngleBracketNotRipped
+SET foundationsym = False
+SET package = pq208
+SET createndf = False
+SET designentry = VHDL
+SET devicefamily = spartan3
+SET formalverification = False
+SET removerpms = False
+

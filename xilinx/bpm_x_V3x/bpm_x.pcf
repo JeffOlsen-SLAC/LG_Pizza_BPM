@@ -1,0 +1,274 @@
+//! **************************************************************************
+// Written by: Map P.20131013 on Fri Aug 14 15:02:53 2020
+//! **************************************************************************
+
+SCHEMATIC START;
+COMP "SEL_SEC" LOCATE = SITE "P19" LEVEL 1;
+COMP "PROG_TDI" LOCATE = SITE "P13" LEVEL 1;
+COMP "PROG_TCK" LOCATE = SITE "P18" LEVEL 1;
+COMP "PROG_TDO" LOCATE = SITE "P15" LEVEL 1;
+COMP "PROG_TMS" LOCATE = SITE "P16" LEVEL 1;
+COMP "LMTR_Pulse" LOCATE = SITE "P72" LEVEL 1;
+COMP "Cal_Init" LOCATE = SITE "P178" LEVEL 1;
+COMP "VAPC" LOCATE = SITE "P80" LEVEL 1;
+COMP "CAL_ATT<1>" LOCATE = SITE "P95" LEVEL 1;
+COMP "CAL_ATT<2>" LOCATE = SITE "P96" LEVEL 1;
+COMP "CAL_ATT<3>" LOCATE = SITE "P97" LEVEL 1;
+COMP "CAL_ATT<4>" LOCATE = SITE "P100" LEVEL 1;
+COMP "CAL_ATT<5>" LOCATE = SITE "P101" LEVEL 1;
+COMP "Reset" LOCATE = SITE "P185" LEVEL 1;
+COMP "n_LMTR_Long_Rst" LOCATE = SITE "P78" LEVEL 1;
+COMP "Qspi_CLK" LOCATE = SITE "P12" LEVEL 1;
+PIN Qspi_CLK_pin<0> = BEL "Qspi_CLK" PINNAME PAD;
+PIN "Qspi_CLK_pin<0>" CLOCK_DEDICATED_ROUTE = FALSE;
+COMP "Qspi_DIn" LOCATE = SITE "P5" LEVEL 1;
+COMP "Local_Clock" LOCATE = SITE "P183" LEVEL 1;
+COMP "n_QSPI_CS<0>" LOCATE = SITE "P7" LEVEL 1;
+COMP "n_QSPI_CS<1>" LOCATE = SITE "P9" LEVEL 1;
+COMP "CAL_SW<1>" LOCATE = SITE "P85" LEVEL 1;
+COMP "CAL_SW<2>" LOCATE = SITE "P86" LEVEL 1;
+COMP "CAL_SW<3>" LOCATE = SITE "P87" LEVEL 1;
+COMP "CAL_SW<4>" LOCATE = SITE "P90" LEVEL 1;
+COMP "CAL_SW<5>" LOCATE = SITE "P67" LEVEL 1;
+COMP "CAL_SW<6>" LOCATE = SITE "P68" LEVEL 1;
+COMP "Osc_On" LOCATE = SITE "P57" LEVEL 1;
+COMP "n_Reboot" LOCATE = SITE "P21" LEVEL 1;
+COMP "ATT_Cntl1A<1>" LOCATE = SITE "P108" LEVEL 1;
+COMP "ATT_Cntl1A<2>" LOCATE = SITE "P109" LEVEL 1;
+COMP "ATT_Cntl1A<3>" LOCATE = SITE "P111" LEVEL 1;
+COMP "ATT_Cntl1A<4>" LOCATE = SITE "P113" LEVEL 1;
+COMP "ATT_Cntl1B<1>" LOCATE = SITE "P114" LEVEL 1;
+COMP "ATT_Cntl1A<5>" LOCATE = SITE "P64" LEVEL 1;
+COMP "ATT_Cntl1B<2>" LOCATE = SITE "P115" LEVEL 1;
+COMP "ATT_Cntl1B<3>" LOCATE = SITE "P116" LEVEL 1;
+COMP "ATT_Cntl1B<4>" LOCATE = SITE "P117" LEVEL 1;
+COMP "ATT_Cntl2A<1>" LOCATE = SITE "P119" LEVEL 1;
+COMP "ATT_Cntl1B<5>" LOCATE = SITE "P63" LEVEL 1;
+COMP "ATT_Cntl2A<2>" LOCATE = SITE "P120" LEVEL 1;
+COMP "ATT_Cntl2A<3>" LOCATE = SITE "P122" LEVEL 1;
+COMP "ATT_Cntl2A<4>" LOCATE = SITE "P123" LEVEL 1;
+COMP "ATT_Cntl2B<1>" LOCATE = SITE "P124" LEVEL 1;
+COMP "ATT_Cntl2A<5>" LOCATE = SITE "P62" LEVEL 1;
+COMP "ATT_Cntl2B<2>" LOCATE = SITE "P125" LEVEL 1;
+COMP "ATT_Cntl2B<3>" LOCATE = SITE "P126" LEVEL 1;
+COMP "ATT_Cntl2B<4>" LOCATE = SITE "P128" LEVEL 1;
+COMP "ATT_Cntl3A<1>" LOCATE = SITE "P131" LEVEL 1;
+COMP "ATT_Cntl2B<5>" LOCATE = SITE "P61" LEVEL 1;
+COMP "ATT_Cntl3A<2>" LOCATE = SITE "P132" LEVEL 1;
+COMP "ATT_Cntl3A<3>" LOCATE = SITE "P133" LEVEL 1;
+COMP "ATT_Cntl3A<4>" LOCATE = SITE "P135" LEVEL 1;
+COMP "ATT_Cntl3B<1>" LOCATE = SITE "P137" LEVEL 1;
+COMP "ATT_Cntl3B<2>" LOCATE = SITE "P138" LEVEL 1;
+COMP "ATT_Cntl3B<3>" LOCATE = SITE "P139" LEVEL 1;
+COMP "ATT_Cntl3B<4>" LOCATE = SITE "P140" LEVEL 1;
+COMP "ATT_Cntl4A<1>" LOCATE = SITE "P141" LEVEL 1;
+COMP "ATT_Cntl4A<2>" LOCATE = SITE "P143" LEVEL 1;
+COMP "ATT_Cntl4A<3>" LOCATE = SITE "P144" LEVEL 1;
+COMP "ATT_Cntl4A<4>" LOCATE = SITE "P146" LEVEL 1;
+COMP "ATT_Cntl4B<1>" LOCATE = SITE "P147" LEVEL 1;
+COMP "ATT_Cntl4B<2>" LOCATE = SITE "P148" LEVEL 1;
+COMP "ATT_Cntl4B<3>" LOCATE = SITE "P149" LEVEL 1;
+COMP "ATT_Cntl4B<4>" LOCATE = SITE "P150" LEVEL 1;
+COMP "n_LMTR_Short_Rst" LOCATE = SITE "P76" LEVEL 1;
+COMP "Trig_reset" LOCATE = SITE "P10" LEVEL 1;
+COMP "Qspi_DOut" LOCATE = SITE "P4" LEVEL 1;
+COMP "Triggered" LOCATE = SITE "P11" LEVEL 1;
+COMP "Sys_Clock" LOCATE = SITE "P184" LEVEL 1;
+COMP "n_RS232_RX" LOCATE = SITE "P2" LEVEL 1;
+COMP "n_RS232_TX" LOCATE = SITE "P3" LEVEL 1;
+COMP "SEL_CLK" LOCATE = SITE "P20" LEVEL 1;
+NET "Qspi_CLK_BUFGP/IBUFG" BEL "Qspi_CLK_BUFGP/BUFG.GCLKMUX" USELOCALCONNECT;
+TIMEGRP Qspi_CLK = BEL "QSPI_Trig" BEL "u_QSPI/QSPI_State_FSM_FFd2" BEL
+        "u_QSPI/QSPI_State_FSM_FFd1" BEL "u_QSPI/Address_7" BEL
+        "u_QSPI/Address_6" BEL "u_QSPI/Address_5" BEL "u_QSPI/Address_4" BEL
+        "u_QSPI/Address_3" BEL "u_QSPI/Address_2" BEL "u_QSPI/Address_1" BEL
+        "u_QSPI/Address_0" BEL "u_QSPI/Write_Strb" BEL "u_QSPI/iDoutEn" BEL
+        "u_QSPI/iRead" BEL "u_QSPI/DataOut_7" BEL "u_QSPI/DataOut_6" BEL
+        "u_QSPI/DataOut_5" BEL "u_QSPI/DataOut_4" BEL "u_QSPI/DataOut_3" BEL
+        "u_QSPI/DataOut_2" BEL "u_QSPI/DataOut_1" BEL "u_QSPI/DataOut_0" BEL
+        "u_QSPI/Counter_3" BEL "u_QSPI/Counter_2" BEL "u_QSPI/Counter_1" BEL
+        "u_QSPI/Counter_0" BEL "u_QSPI/DoutEn" BEL "u_QSPI/Load" BEL
+        "u_QSPI/DataOutSR_7" BEL "u_QSPI/DataOutSR_6" BEL "u_QSPI/DataOutSR_5"
+        BEL "u_QSPI/DataOutSR_4" BEL "u_QSPI/DataOutSR_3" BEL
+        "u_QSPI/DataOutSR_2" BEL "u_QSPI/CMDSR_6" BEL "u_QSPI/CMDSR_5" BEL
+        "u_QSPI/CMDSR_4" BEL "u_QSPI/CMDSR_3" BEL "u_QSPI/CMDSR_2" BEL
+        "u_QSPI/CMDSR_1" BEL "u_QSPI/CMDSR_0" BEL "u_QSPI/iDout" BEL
+        "u_QSPI/DataInSr_6" BEL "u_QSPI/DataInSr_5" BEL "u_QSPI/DataInSr_4"
+        BEL "u_QSPI/DataInSr_3" BEL "u_QSPI/DataInSr_2" BEL
+        "u_QSPI/DataInSr_1" BEL "u_QSPI/DataInSr_0" BEL "u_QSPI/DataOutSR_1"
+        BEL "Qspi_CLK_BUFGP/BUFG.GCLKMUX" BEL "Qspi_CLK_BUFGP/BUFG";
+TIMEGRP u_clkdiv3_CLKDV_BUF = BEL "RS232_Trig" BEL "u_RegSeq/iqspiWrSr_2" BEL
+        "u_RegSeq/iqspiWrSr_1" BEL "u_RegSeq/iqspiWrSr_0" BEL
+        "u_RegSeq/iqspiWr" BEL "u_RegSeq/iqspiAIn_5" BEL "u_RegSeq/iqspiAIn_4"
+        BEL "u_RegSeq/iqspiAIn_3" BEL "u_RegSeq/iqspiAIn_2" BEL
+        "u_RegSeq/iqspiAIn_1" BEL "u_RegSeq/iqspiAIn_0" BEL
+        "u_RegSeq/iqspiDIn_7" BEL "u_RegSeq/iqspiDIn_6" BEL
+        "u_RegSeq/iqspiDIn_5" BEL "u_RegSeq/iqspiDIn_4" BEL
+        "u_RegSeq/iqspiDIn_3" BEL "u_RegSeq/iqspiDIn_2" BEL
+        "u_RegSeq/iqspiDIn_1" BEL "u_RegSeq/iqspiDIn_0" BEL
+        "u_rs232/u_Rx/RXState_FSM_FFd2" BEL "u_rs232/u_Rx/RXState_FSM_FFd1"
+        BEL "u_rs232/u_Rx/BitWidthCnt_11" BEL "u_rs232/u_Rx/BitWidthCnt_10"
+        BEL "u_rs232/u_Rx/BitWidthCnt_9" BEL "u_rs232/u_Rx/BitWidthCnt_8" BEL
+        "u_rs232/u_Rx/BitWidthCnt_7" BEL "u_rs232/u_Rx/BitWidthCnt_6" BEL
+        "u_rs232/u_Rx/BitWidthCnt_5" BEL "u_rs232/u_Rx/BitWidthCnt_4" BEL
+        "u_rs232/u_Rx/BitWidthCnt_3" BEL "u_rs232/u_Rx/BitWidthCnt_2" BEL
+        "u_rs232/u_Rx/BitWidthCnt_1" BEL "u_rs232/u_Rx/BitWidthCnt_0" BEL
+        "u_rs232/u_Rx/BitCnt_3" BEL "u_rs232/u_Rx/BitCnt_2" BEL
+        "u_rs232/u_Rx/BitCnt_1" BEL "u_rs232/u_Rx/BitCnt_0" BEL
+        "u_rs232/u_Rx/RxSR_1" BEL "u_rs232/u_Rx/RxSR_2" BEL
+        "u_rs232/u_Rx/RxSR_3" BEL "u_rs232/u_Rx/RxSR_4" BEL
+        "u_rs232/u_Rx/RxSR_5" BEL "u_rs232/u_Rx/RxSR_6" BEL
+        "u_rs232/u_Rx/RxSR_7" BEL "u_rs232/u_Rx/IFilter_3" BEL
+        "u_rs232/u_Rx/RxSR_8" BEL "u_rs232/u_Rx/IFilter_2" BEL
+        "u_rs232/u_Rx/iRxData_7" BEL "u_rs232/u_Rx/iRxData_6" BEL
+        "u_rs232/u_Rx/iRxData_5" BEL "u_rs232/u_Rx/iRxData_4" BEL
+        "u_rs232/u_Rx/iRxData_3" BEL "u_rs232/u_Rx/iRxData_2" BEL
+        "u_rs232/u_Rx/iRxData_1" BEL "u_rs232/u_Rx/iRxData_0" BEL
+        "u_rs232/u_Rx/RxSR_9" BEL "u_rs232/u_Rx/RxDone" BEL
+        "u_rs232/u_Rx/IFilter_1" BEL "u_rs232/u_Rx/RxSR_10" BEL
+        "u_rs232/u_Rx/iRxParity" BEL "u_rs232/u_Rx/FDIN" BEL
+        "u_rs232/u_Rx/IFilter_0" BEL "u_rs232/u_Receive/ReceiveState_FSM_FFd2"
+        BEL "u_rs232/u_Receive/ReceiveState_FSM_FFd1" BEL
+        "u_rs232/u_Receive/ReceiveState_FSM_FFd3" BEL
+        "u_rs232/u_Receive/ByteCnt_2" BEL "u_rs232/u_Receive/ByteCnt_1" BEL
+        "u_rs232/u_Receive/ByteCnt_0" BEL "u_rs232/u_Receive/Valid" BEL
+        "u_rs232/u_Receive/dDAV" BEL "u_rs232/u_Receive/tdiff_3" BEL
+        "u_rs232/u_Receive/tdiff_2" BEL "u_rs232/u_Receive/tdiff_1" BEL
+        "u_rs232/u_Receive/tdiff_0" BEL "u_rs232/u_Receive/iData_6" BEL
+        "u_rs232/u_Receive/iData_5" BEL "u_rs232/u_Receive/Dav0" BEL
+        "u_rs232/u_Receive/iData_3" BEL "u_rs232/u_Receive/iData_4" BEL
+        "u_rs232/u_Receive/iAddr_7" BEL "u_rs232/u_Receive/iData_2" BEL
+        "u_rs232/u_Receive/iAddr_6" BEL "u_rs232/u_Receive/iData_1" BEL
+        "u_rs232/u_Receive/iData_0" BEL "u_rs232/u_Receive/iAddr_4" BEL
+        "u_rs232/u_Receive/iAddr_5" BEL "u_rs232/u_Receive/iAddr_3" BEL
+        "u_rs232/u_Receive/iAddr_2" BEL "u_rs232/u_Receive/iAddr_1" BEL
+        "u_rs232/u_Receive/iAddr_0" BEL "u_rs232/u_Receive/En" BEL
+        "u_rs232/u_Receive/Read" BEL "u_rs232/u_Receive/iData_7" BEL
+        "u_rs232/u_transmit/transmitState_FSM_FFd2" BEL
+        "u_rs232/u_transmit/transmitState_FSM_FFd1" BEL
+        "u_rs232/u_transmit/transmitState_FSM_FFd3" BEL
+        "u_rs232/u_transmit/ByteCnt_3" BEL "u_rs232/u_transmit/ByteCnt_2" BEL
+        "u_rs232/u_transmit/ByteCnt_1" BEL "u_rs232/u_transmit/ByteCnt_0" BEL
+        "u_rs232/u_transmit/TSum_6" BEL "u_rs232/u_transmit/TSum_4" BEL
+        "u_rs232/u_transmit/TSum_3" BEL "u_rs232/u_transmit/TSum_2" BEL
+        "u_rs232/u_transmit/TSum_1" BEL "u_rs232/u_transmit/TSum_0" BEL
+        "u_rs232/u_transmit/DataSr_11" BEL "u_rs232/u_transmit/DataSr_10" BEL
+        "u_rs232/u_transmit/DataSr_12" BEL "u_rs232/u_transmit/DataSr_8" BEL
+        "u_rs232/u_transmit/DataSr_7" BEL "u_rs232/u_transmit/DataSr_9" BEL
+        "u_rs232/u_transmit/DataSr_6" BEL "u_rs232/u_transmit/DataSr_5" BEL
+        "u_rs232/u_transmit/DataSr_3" BEL "u_rs232/u_transmit/DataSr_2" BEL
+        "u_rs232/u_transmit/DataSr_4" BEL "u_rs232/u_transmit/DataSr_0" BEL
+        "u_rs232/u_transmit/DataSr_15" BEL "u_rs232/u_transmit/DataSr_1" BEL
+        "u_rs232/u_transmit/DataSr_13" BEL "u_rs232/u_transmit/DataSr_14" BEL
+        "u_rs232/u_Tx/TXState_FSM_FFd2" BEL "u_rs232/u_Tx/TXState_FSM_FFd1"
+        BEL "u_rs232/u_Tx/TXState_FSM_FFd3" BEL "u_rs232/u_Tx/BitWidthCnt_11"
+        BEL "u_rs232/u_Tx/BitWidthCnt_10" BEL "u_rs232/u_Tx/BitWidthCnt_9" BEL
+        "u_rs232/u_Tx/BitWidthCnt_8" BEL "u_rs232/u_Tx/BitWidthCnt_7" BEL
+        "u_rs232/u_Tx/BitWidthCnt_6" BEL "u_rs232/u_Tx/BitWidthCnt_5" BEL
+        "u_rs232/u_Tx/BitWidthCnt_4" BEL "u_rs232/u_Tx/BitWidthCnt_3" BEL
+        "u_rs232/u_Tx/BitWidthCnt_2" BEL "u_rs232/u_Tx/BitWidthCnt_1" BEL
+        "u_rs232/u_Tx/BitWidthCnt_0" BEL "u_rs232/u_Tx/BitCnt_3" BEL
+        "u_rs232/u_Tx/BitCnt_2" BEL "u_rs232/u_Tx/BitCnt_1" BEL
+        "u_rs232/u_Tx/BitCnt_0" BEL "u_rs232/u_Tx/TxDone" BEL
+        "u_rs232/u_Tx/TxSR_7" BEL "u_rs232/u_Tx/TxSR_6" BEL
+        "u_rs232/u_Tx/TxSR_5" BEL "u_rs232/u_Tx/TxSR_4" BEL
+        "u_rs232/u_Tx/TxSR_3" BEL "u_rs232/u_Tx/TxSR_2" BEL
+        "u_rs232/u_Tx/TxSR_1" BEL "u_rs232/u_Tx/TxSR_0" BEL
+        "u_rs232/u_Tx/TxOut" BEL "u_rs232/u_Tx/TxParity" BEL
+        "u_BPMReg/RF12RF2_Reg_0" BEL "u_BPMReg/RF12RF2_Reg_1" BEL
+        "u_BPMReg/RF12RF2_Reg_2" BEL "u_BPMReg/RF12RF2_Reg_3" BEL
+        "u_BPMReg/RF12RF2_Reg_4" BEL "u_BPMReg/RF12RF2_Reg_5" BEL
+        "u_BPMReg/RF12RF2_Reg_6" BEL "u_BPMReg/RF12RF2_Reg_7" BEL
+        "u_BPMReg/RFWidth_Reg_0" BEL "u_BPMReg/RFWidth_Reg_1" BEL
+        "u_BPMReg/RFWidth_Reg_2" BEL "u_BPMReg/RFWidth_Reg_3" BEL
+        "u_BPMReg/RFWidth_Reg_4" BEL "u_BPMReg/RFWidth_Reg_5" BEL
+        "u_BPMReg/RFWidth_Reg_6" BEL "u_BPMReg/RFWidth_Reg_7" BEL
+        "u_BPMReg/Trig2AMP_Reg_0" BEL "u_BPMReg/Trig2AMP_Reg_1" BEL
+        "u_BPMReg/Trig2AMP_Reg_2" BEL "u_BPMReg/Trig2AMP_Reg_3" BEL
+        "u_BPMReg/Trig2AMP_Reg_4" BEL "u_BPMReg/Trig2AMP_Reg_5" BEL
+        "u_BPMReg/Trig2AMP_Reg_6" BEL "u_BPMReg/Trig2AMP_Reg_7" BEL
+        "u_BPMReg/OffTime_Reg_0" BEL "u_BPMReg/OffTime_Reg_1" BEL
+        "u_BPMReg/OffTime_Reg_2" BEL "u_BPMReg/OffTime_Reg_3" BEL
+        "u_BPMReg/OffTime_Reg_4" BEL "u_BPMReg/OffTime_Reg_5" BEL
+        "u_BPMReg/OffTime_Reg_6" BEL "u_BPMReg/OffTime_Reg_7" BEL
+        "u_BPMReg/AMP2RF1_Reg_0" BEL "u_BPMReg/AMP2RF1_Reg_1" BEL
+        "u_BPMReg/AMP2RF1_Reg_2" BEL "u_BPMReg/AMP2RF1_Reg_3" BEL
+        "u_BPMReg/AMP2RF1_Reg_4" BEL "u_BPMReg/AMP2RF1_Reg_5" BEL
+        "u_BPMReg/AMP2RF1_Reg_6" BEL "u_BPMReg/AMP2RF1_Reg_7" BEL
+        "u_BPMReg/CSRReg_0" BEL "u_BPMReg/CSRReg_1" BEL "u_BPMReg/CSRReg_5"
+        BEL "u_BPMReg/CSRReg_3" BEL "u_BPMReg/CSRReg_4" BEL
+        "u_BPMReg/ATT1Reg_3" BEL "u_BPMReg/ATT1Reg_2" BEL "u_BPMReg/ATT1Reg_1"
+        BEL "u_BPMReg/ATT1Reg_0" BEL "u_BPMReg/BootReg_2" BEL
+        "u_BPMReg/BootReg_1" BEL "u_BPMReg/BootReg_0" BEL "u_BPMReg/ATT2Reg_4"
+        BEL "u_BPMReg/ATT2Reg_3" BEL "u_BPMReg/ATT2Reg_2" BEL
+        "u_BPMReg/ATT2Reg_1" BEL "u_BPMReg/ATT2Reg_0" BEL "u_BPMReg/CALReg_4"
+        BEL "u_BPMReg/CALReg_3" BEL "u_BPMReg/CALReg_2" BEL
+        "u_BPMReg/CALReg_1" BEL "u_BPMReg/CALReg_0" BEL "u_BPMReg/JTAGReg_2"
+        BEL "u_BPMReg/JTAGReg_1" BEL "u_BPMReg/JTAGReg_0" BEL
+        "u_BPMReg/LMTReg" BEL "u_limiter/LongRst1/counter_0" BEL
+        "u_limiter/LongRst1/counter_1" BEL "u_limiter/LongRst1/counter_2" BEL
+        "u_limiter/LongRst1/counter_3" BEL "u_limiter/LongRst1/counter_4" BEL
+        "u_limiter/LongRst1/counter_5" BEL "u_limiter/LongRst1/counter_6" BEL
+        "u_limiter/LongRst1/counter_7" BEL "u_limiter/LongRst1/counter_8" BEL
+        "u_limiter/LongRst1/counter_9" BEL "u_limiter/LongRst1/counter_10" BEL
+        "u_limiter/LongRst1/counter_11" BEL "u_limiter/LongRst1/counter_12"
+        BEL "u_limiter/LongRst1/counter_13" BEL
+        "u_limiter/LongRst1/counter_14" BEL "u_limiter/LongRst1/counter_15"
+        BEL "u_limiter/LongRst1/OS_State_0" BEL "u_limiter/LongRst1/Trigger"
+        BEL "u_limiter/LongRst1/OS_Out" BEL "u_limiter/ShortRst1/DelayPulse"
+        BEL "u_limiter/ShortRst1/Counter_0" BEL
+        "u_limiter/ShortRst1/Counter_1" BEL "u_limiter/ShortRst1/Counter_2"
+        BEL "u_limiter/ShortRst1/Counter_3" BEL
+        "u_limiter/ShortRst1/Counter_4" BEL "u_limiter/ShortRst1/Counter_5"
+        BEL "u_limiter/ShortRst1/Counter_6" BEL
+        "u_limiter/ShortRst1/Counter_7" BEL "u_limiter/ShortRst1/Counter_8"
+        BEL "u_limiter/ShortRst1/Counter_9" BEL
+        "u_limiter/ShortRst1/Counter_10" BEL "u_limiter/ShortRst1/Counter_11"
+        BEL "u_limiter/ShortRst1/Counter_12" BEL
+        "u_limiter/ShortRst1/Counter_13" BEL "u_limiter/ShortRst1/Counter_14"
+        BEL "u_limiter/ShortRst1/Counter_15" BEL
+        "u_limiter/ShortRst1/DelayState_FSM_FFd2" BEL
+        "u_limiter/FallingEdgeSr_1" BEL "u_limiter/FallingEdgeSr_0" BEL
+        "u_limiter/LMT_Long_Rst" BEL "u_limiter/TrigSr_2" BEL
+        "u_limiter/TrigSr_1" BEL "u_limiter/TrigSr_0" BEL "u_limiter/trigger"
+        BEL "u_limiter/ShortRst1/DelayState_FSM_FFd1" BEL
+        "u_clkdiv3/CLKDV_BUFG_INST.GCLKMUX" BEL "u_clkdiv3/CLKDV_BUFG_INST";
+TIMEGRP u_clk2x_CLK2X_BUF = BEL "u_trigcon/SW_TrigSr_2" BEL
+        "u_trigcon/SW_TrigSr_1" BEL "u_trigcon/SW_TrigSr_0" BEL
+        "u_trigcon/Cal_TrigSr_2" BEL "u_trigcon/Cal_TrigSr_1" BEL
+        "u_trigcon/Cal_TrigSr_0" BEL "u_trigcon/Sys_Trigger" BEL
+        "u_handshake/Triggered" BEL "u_handshake/iTrig_reset" BEL
+        "u_handshake/handshakeSr_2" BEL "u_handshake/handshakeSr_1" BEL
+        "u_handshake/handshakeSr_0" BEL "u_cal_seq/NextState_FSM_FFd2" BEL
+        "u_cal_seq/NextState_FSM_FFd1" BEL "u_cal_seq/NextState_FSM_FFd3" BEL
+        "u_cal_seq/AutoOscOn" BEL "u_cal_seq/Counter_9" BEL
+        "u_cal_seq/Counter_8" BEL "u_cal_seq/Counter_7" BEL
+        "u_cal_seq/Counter_6" BEL "u_cal_seq/Counter_5" BEL
+        "u_cal_seq/Counter_4" BEL "u_cal_seq/Counter_3" BEL
+        "u_cal_seq/Counter_2" BEL "u_cal_seq/Counter_1" BEL
+        "u_cal_seq/Counter_0" BEL "u_cal_seq/RF_On" BEL
+        "u_cal_seq/usCounter_19" BEL "u_cal_seq/usCounter_18" BEL
+        "u_cal_seq/usCounter_17" BEL "u_cal_seq/usCounter_16" BEL
+        "u_cal_seq/usCounter_15" BEL "u_cal_seq/usCounter_14" BEL
+        "u_cal_seq/usCounter_13" BEL "u_cal_seq/usCounter_12" BEL
+        "u_cal_seq/usCounter_11" BEL "u_cal_seq/usCounter_10" BEL
+        "u_cal_seq/usCounter_9" BEL "u_cal_seq/usCounter_8" BEL
+        "u_cal_seq/usCounter_7" BEL "u_cal_seq/usCounter_6" BEL
+        "u_cal_seq/usCounter_5" BEL "u_cal_seq/usCounter_4" BEL
+        "u_cal_seq/usCounter_3" BEL "u_cal_seq/usCounter_2" BEL
+        "u_cal_seq/usCounter_1" BEL "u_cal_seq/usCounter_0" BEL
+        "u_cal_seq/iC4" BEL "u_cal_seq/iC2" BEL "u_cal_seq/AMP_On" BEL
+        "u_cal_seq/Start" BEL "u_clk2x/CLK2X_BUFG_INST.GCLKMUX" BEL
+        "u_clk2x/CLK2X_BUFG_INST";
+PIN u_clk2x/DCM_INST_pins<3> = BEL "u_clk2x/DCM_INST" PINNAME CLKIN;
+PIN u_clkdiv3/DCM_INST_pins<3> = BEL "u_clkdiv3/DCM_INST" PINNAME CLKIN;
+TIMEGRP Local_Clock = PIN "u_clk2x/DCM_INST_pins<3>" PIN
+        "u_clkdiv3/DCM_INST_pins<3>";
+TS_Local_Clock = PERIOD TIMEGRP "Local_Clock" 60 MHz HIGH 50%;
+TS_Qspi_CLK = PERIOD TIMEGRP "Qspi_CLK" 20 MHz HIGH 50%;
+TS_u_clk2x_CLK2X_BUF = PERIOD TIMEGRP "u_clk2x_CLK2X_BUF" TS_Local_Clock * 2
+        HIGH 50%;
+TS_u_clkdiv3_CLKDV_BUF = PERIOD TIMEGRP "u_clkdiv3_CLKDV_BUF" TS_Local_Clock /
+        3 HIGH 50%;
+SCHEMATIC END;
+

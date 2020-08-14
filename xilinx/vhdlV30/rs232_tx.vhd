@@ -1,0 +1,364 @@
+-----------------------------------------------------------------
+--                                                             --
+-----------------------------------------------------------------
+--
+--  rs232_tx.vhd - 
+--
+--  Copyright(c) SLAC 2000
+--
+--  Author: Jeff Olsen
+--  Created on: 10/26/2006 4:05:21 PM
+--  Last change: JO 10/26/2006 4:12:17 PM
+--
+-- 
+-- Created by Jeff Olsen 6/27/00
+--
+--  Filename: RS232_tx.vhd
+--
+--  Function:
+--  Transmit 19.2KBd Serial Data using 20Mhz clk--  
+--  Modifications:
+
+--  Modifications:
+--  03/15/02 jjo
+--  Added 9600 baud rate
+--  Increased NBitWidth from 11 to 12
+
+Library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+use ieee.std_logic_arith.all;
+ 
+
+library work;
+use work.bpm.all;
+
+Entity rs232_tx is
+Port (
+	TxCLK		: in std_logic;
+	Reset 		: in std_logic;
+	Xmit		: in std_logic;
+	Data		: in std_logic_vector(7 downto 0);
+	TxDone		: out std_logic;
+	TxOut		: out std_logic
+	);
+
+End rs232_tx;
+
+Architecture BEHAVIOUR of rs232_tx is
+
+-- 03/15/02 changed NbitWidth from 10 to 11
+
+Constant NBits		: integer := 7; -- N-1
+Constant NBitwidth 	: integer := 11; -- N-1
+Constant NBitCnt	: integer := 3;
+
+
+-- 9600kBd
+--Constant BitWidth 	: std_logic_vector(NBitWidth downto 0)  := "100000100011"; -- 2083 (823)
+--Constant BitWidth2 	: std_logic_vector(NBitWidth downto 0)  := "010000010001"; 
+
+
+-- 19200kBd
+--Constant BitWidth 	: std_logic_vector(NBitWidth downto 0)  := "010000010010"; -- 1042 (412)
+--Constant BitWidth2 	: std_logic_vector(NBitWidth downto 0)  := "001000001001"; 
+
+-- 38400kBd
+--Constant BitWidth 	: std_logic_vector(NBitWidth downto 0)  := "010100100000"; -- 520 (208)
+--Constant BitWidth2 	: std_logic_vector(NBitWidth downto 0)  := "001010010000"; 
+
+-- 57600kBd
+--Constant BitWidth 	: std_logic_vector(NBitWidth downto 0)  := "000101011011"; -- 347 (15B)
+--Constant BitWidth2 	: std_logic_vector(NBitWidth downto 0)  := "000010101101"; 
+
+-- 115200kBd
+Constant BitWidth 	: std_logic_vector(NBitWidth downto 0)  := "000010101110"; -- 174 (AE)
+Constant BitWidth2 	: std_logic_vector(NBitWidth downto 0)  := "000001010111"; 
+
+
+
+
+Type TXState_t is
+(
+	Idle,
+	Start,
+	Tx,
+	Parity,
+	Stop,
+	Term
+);
+
+Signal TXState 		: TXState_t;
+Signal NextState 	: TXState_t;
+
+Signal TxSR			: std_logic_vector(NBits downto 0);
+Signal EnTxSr		: std_logic;
+signal LdTxSr		: std_logic;
+signal iTxOut 		: std_logic;
+signal iTxDone		: std_logic;
+signal TxParity		: std_logic;
+signal LdParity 	: std_logic;
+signal EnParity		: std_logic;
+
+Signal BitWidthCnt		: std_logic_vector(NbitWidth downto 0);
+Signal NextWidthCnt		: std_logic_vector(NBitWidth downto 0);
+Signal LdBitWidthCnt	: std_logic;
+Signal DnBitWidthCnt	: std_logic;
+
+
+Signal BitCnt		: std_logic_vector(NBitCnt downto 0);
+Signal LdBitCnt		: std_logic;
+Signal DnBitCnt		: std_logic;
+
+
+Begin
+
+TxOut_p: Process(TxCLK, Reset)
+begin 
+if (reset = '1') then
+	TxOut <= '0';
+ElsIf (TxCLK'Event and TxCLK = '1') then
+	TxOut <= iTxOut;
+end if;
+end process; -- TxOut
+
+TxDone_p: Process(TxCLK, Reset)
+begin 
+if (reset = '1') then
+	TxDone <= '0';
+ElsIf (TxCLK'Event and TxCLK = '1') then
+	TxDone <= iTxDone;
+end if;
+end process; -- TxDone
+	
+	
+Parity_p: Process(TxCLK, Reset)
+Begin
+If (Reset = '1') then
+	TxParity <= '0';
+ElsIf (TxCLK'Event and TxCLK = '1') then
+	If (LdParity = '1') then
+		TxParity <= '1';
+	elsif (EnParity = '1') then
+		TxParity <= (TxParity XOR TxSr(0));
+	else
+		TxParity <= TxParity;
+	end if;
+end if;
+End Process; -- Parity_p
+
+Count_p: Process(TxCLK, Reset)
+Begin
+If (Reset = '1') then
+	BitCnt <= (Others => '0');
+ElsIf (TxCLK'Event and TxCLK = '1') then
+	If (LdBitCnt = '1') then
+		BitCnt <= "0111";
+	elsif (DnBitCnt= '1') then
+		BitCnt <= BitCnt - 1;
+	else
+		BitCnt <= BitCnt;
+	end if;
+end if;
+end process; -- Count_p
+
+BitWidthCnt_p: Process(TxCLK, Reset)
+Begin
+If (Reset = '1') then
+	BitWidthCnt <= (others => '0');
+ElsIf (TxCLK'Event and TxCLK = '1') then
+	If (LdBitWidthCnt = '1') then
+		BitWidthCnt <= NextWidthCnt;
+	elsif (DnBitWidthCnt = '1') then
+		BitWidthCnt <= BitWidthCnt - 1;
+	else
+		BitWidthCnt <= BitWidthCnt;
+	end if;
+end if;
+end process; -- BitWidthCnt_p
+
+
+TxSr_p: Process(TxCLK, Reset)
+Begin
+If (Reset = '1') then
+	TxSR <= (Others => '0');
+ElsIf (TxCLK'Event and TxCLK = '1') then
+	If (EnTxSR = '1') then
+		TxSR(Nbits-1 downto 0) <= TxSR(Nbits downto 1);
+		TxSr(Nbits) <= '0';
+	elsif (LdTxSr = '1') then
+		TxSR <= NOT(Data);
+	else 
+		TxSR <= TxSR;
+	end if;
+end if;
+end process; -- TxSR_p
+
+
+TxSm: Process(TxCLK, Reset)
+Begin
+If (Reset = '1') then
+	TxState <= IDLE;
+ElsIf (TxCLK'Event and TxCLK = '1') then
+		TxState <= NextState;
+end if;
+end process; -- TxSM
+
+
+Tx_p: Process(TxState, NextState, Xmit, BitWidthCnt, BitCnt, TxParity, TxSr)
+Begin
+Case TxState is
+
+When Idle =>
+		DnBitCnt		<= '0';
+		DnBitWidthCnt 	<= '0';
+		EnTxSr 			<= '0';
+		LdParity 		<= '0';
+		EnParity 		<= '0';
+		iTxOut 			<= '0';
+		iTxDone			<= '0';
+		NextWidthCnt	<= BitWidth;
+		If (Xmit = '1') then
+			LdBitWidthCnt 	<= '1';
+			LdBitCnt 		<= '1';
+			LdTxSr 			<= '1';
+			NextState 		<= Start;
+		else
+			LdBitWidthCnt 	<= '0';
+			LdBitCnt 		<= '0';
+			LdTxSr 			<= '0';
+			NextState 		<= Idle;
+		end if;
+
+When Start =>
+		LdBitCnt 		<= '0';
+		LdTxSr 			<= '0';
+		LdParity 		<= '1';
+		EnTxSr 			<= '0';
+		iTxOut 			<= '1';
+		iTxDone			<= '0';
+		DnBitCnt		<= '0';
+		EnParity 		<= '0';
+		NextWidthCnt	<= BitWidth;
+		If (BitWidthCnt = "00000000000") then
+			DnBitWidthCnt 	<= '0';
+			LdBitWidthCnt 	<= '1';
+			NextState  		<= Tx;
+
+		else
+			DnBitWidthCnt 	<= '1';
+			LdBitWidthCnt 	<= '0';
+			NextState 		<= Start;
+		end if;
+
+When Tx =>
+		LdBitCnt 		<= '0';
+		LdTxSr 			<= '0';
+		LdParity 		<= '0';
+		iTxOut 			<= TxSr(0);
+		iTxDone			<= '0';
+		NextWidthCnt	<= BitWidth;
+		If (BitWidthCnt = "00000000000") then
+			DnBitCnt		<= '1';
+			DnBitWidthCnt 	<= '0';
+			LdBitWidthCnt 	<= '1';
+			EnTxSr 			<= '1';
+			EnParity 		<= '1';
+			if ( BitCnt = "0000") then
+				NextState 	<= Parity;
+			else	
+				NextState 	<= Tx;
+			end if;
+
+		else
+			DnBitCnt		<= '0';
+			DnBitWidthCnt 	<= '1';
+			LdBitWidthCnt 	<= '0';
+			EnTxSr 			<= '0';
+			EnParity 		<= '0';
+			NextState 		<= Tx;
+
+		end if;
+
+When Parity => 
+		LdBitCnt 		<= '0';
+		DnBitCnt		<= '0';
+		LdTxSr 			<= '0';
+		LdParity 		<= '0';
+		iTxOut 			<= TxParity;
+		iTxDone			<= '0';
+		NextWidthCnt 	<= BitWidth;
+
+		If (BitWidthCnt = "00000000000") then
+			DnBitWidthCnt 	<= '0';
+			LdBitWidthCnt 	<= '1';
+			EnTxSr 			<= '1';
+			EnParity 		<= '1';
+			NextState 		<= Stop;
+		else
+			DnBitWidthCnt 	<= '1';
+			LdBitWidthCnt 	<= '0';
+			EnTxSr 			<= '1';
+			EnParity 		<= '1';
+			NextState 		<= Parity;
+		end if;
+
+When Stop => 
+		LdBitCnt 		<= '0';
+		LdTxSr 			<= '0';
+		LdParity 		<= '0';
+		iTxOut 			<= '0';
+		iTxDone			<= '0';
+		NextWidthCnt	<= BitWidth;
+
+		If (BitWidthCnt = "00000000000") then
+			DnBitCnt		<= '1';
+			DnBitWidthCnt 	<= '0';
+			LdBitWidthCnt 	<= '1';
+			EnTxSr 			<= '1';
+			EnParity 		<= '1';
+			NextState 		<= Term;
+		else
+			DnBitCnt		<= '0';
+			DnBitWidthCnt 	<= '1';
+			LdBitWidthCnt 	<= '0';
+			EnTxSr 			<= '1';
+			EnParity 		<= '1';
+			NextState 		<= Stop;
+		end if;
+
+
+When Term =>
+		LdBitCnt 		<= '0';
+		DnBitCnt		<= '0';
+		LdBitWidthCnt 	<= '0';
+		DnBitWidthCnt 	<= '0';
+		LdTxSr 			<= '0';
+		EnTxSr 			<= '0';
+		LdParity 		<= '0';
+		EnParity 		<= '0';
+		iTxOut 			<= '0';
+		iTxDone			<= '1';
+		NextWidthCnt	<= BitWidth;
+		NextState 		<= Idle;
+	
+When Others =>
+		LdBitCnt 		<= '0';
+		DnBitCnt		<= '0';
+		LdBitWidthCnt 	<= '0';
+		DnBitWidthCnt 	<= '0';
+		LdTxSr 			<= '0';
+		EnTxSr 			<= '0';
+		LdParity 		<= '0';
+		EnParity 		<= '0';
+		iTxOut 			<= '0';
+		iTxDone			<= '0';
+		NextWidthCnt	<= BitWidth;
+		NextState 		<= Idle;
+	
+
+End Case;
+end process; -- Tx_P
+
+End Behaviour;
+

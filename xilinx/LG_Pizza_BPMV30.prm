@@ -1,0 +1,17 @@
+PROMGEN: Xilinx Prom Generator P.20131013
+Copyright (c) 1995-2013 Xilinx, Inc.  All rights reserved.
+
+promgen -w -p mcs -c FF -o /afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx//LG_Pizza_BPMV30 -x xcf02s -u 00000000 /afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x/bpm_x.bit 
+
+PROM /afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/LG_Pizza_BPMV30.prm map: Fri Aug 14 15:09:19 2020
+
+Calculating PROM checksum with fill value ff
+
+Format        Mcs86 (32-bit)
+Size          256K
+PROM start    0000:0000
+PROM end      0003:ffff
+PROM checksum 00ceebe3
+
+        Addr1        Addr2                     Date File(s)
+    0000:0000    0003:3da7     Aug 14 15:03:12 2020 /afs/slac.stanford.edu/u/el/jjo/TidAir/Projects/LG_Pizza_BPM/xilinx/bpm_x_V3x/bpm_x.bit

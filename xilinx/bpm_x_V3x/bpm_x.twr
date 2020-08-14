@@ -1,0 +1,103 @@
+--------------------------------------------------------------------------------
+Release 9.2.04i Trace 
+Copyright (c) 1995-2007 Xilinx, Inc.  All rights reserved.
+
+C:\Xilinx92i\bin\nt\trce.exe -ise
+F:/LCLS/BPM_digital/xilinx/bpm_x_V2x/bpm_x_V2x.ise -intstyle ise -e 3 -s 4 -xml
+bpm_x bpm_x.ncd -o bpm_x.twr bpm_x.pcf -ucf bpm_x.ucf
+
+Design file:              bpm_x.ncd
+Physical constraint file: bpm_x.pcf
+Device,package,speed:     xc3s400,pq208,-4 (PRODUCTION 1.39 2007-10-19)
+Report level:             error report
+
+Environment Variable      Effect 
+--------------------      ------ 
+NONE                      No environment variables were set
+--------------------------------------------------------------------------------
+
+INFO:Timing:2752 - To get complete path coverage, use the unconstrained paths 
+   option. All paths that are not constrained will be reported in the 
+   unconstrained paths section(s) of the report.
+INFO:Timing:3339 - The clock-to-out numbers in this timing report are based on 
+   a 50 Ohm transmission line loading model.  For the details of this model, 
+   and for more information on accounting for different loading conditions, 
+   please see the device datasheet.
+
+================================================================================
+Timing constraint: TS_Local_Clock = PERIOD TIMEGRP "Local_Clock" 60 MHz HIGH 
+50%;
+
+ 0 items analyzed, 0 timing errors detected.
+--------------------------------------------------------------------------------
+
+================================================================================
+Timing constraint: TS_Qspi_CLK = PERIOD TIMEGRP "Qspi_CLK" 20 MHz HIGH 50%;
+
+ 278 items analyzed, 0 timing errors detected. (0 setup errors, 0 hold errors)
+ Minimum period is   6.600ns.
+--------------------------------------------------------------------------------
+
+================================================================================
+Timing constraint: TS_u_clk2x_CLK2X_BUF = PERIOD TIMEGRP "u_clk2x_CLK2X_BUF" 
+TS_Local_Clock * 2         HIGH 50%;
+
+ 3634 items analyzed, 0 timing errors detected. (0 setup errors, 0 hold errors)
+ Minimum period is   8.240ns.
+--------------------------------------------------------------------------------
+
+================================================================================
+Timing constraint: TS_u_clkdiv3_CLKDV_BUF = PERIOD TIMEGRP 
+"u_clkdiv3_CLKDV_BUF" TS_Local_Clock /         3 HIGH 50%;
+
+ 19898 items analyzed, 0 timing errors detected. (0 setup errors, 0 hold errors)
+ Minimum period is  18.475ns.
+--------------------------------------------------------------------------------
+
+
+All constraints were met.
+
+
+Data Sheet report:
+-----------------
+All values displayed in nanoseconds (ns)
+
+Clock to Setup on destination clock Local_Clock
+---------------+---------+---------+---------+---------+
+               | Src:Rise| Src:Fall| Src:Rise| Src:Fall|
+Source Clock   |Dest:Rise|Dest:Rise|Dest:Fall|Dest:Fall|
+---------------+---------+---------+---------+---------+
+Local_Clock    |   18.475|         |         |         |
+---------------+---------+---------+---------+---------+
+
+Clock to Setup on destination clock Qspi_CLK
+---------------+---------+---------+---------+---------+
+               | Src:Rise| Src:Fall| Src:Rise| Src:Fall|
+Source Clock   |Dest:Rise|Dest:Rise|Dest:Fall|Dest:Fall|
+---------------+---------+---------+---------+---------+
+Qspi_CLK       |    6.600|         |    3.093|         |
+---------------+---------+---------+---------+---------+
+
+
+Timing summary:
+---------------
+
+Timing errors: 0  Score: 0
+
+Constraints cover 23810 paths, 0 nets, and 2920 connections
+
+Design statistics:
+   Minimum period:  18.475ns   (Maximum frequency:  54.127MHz)
+
+
+Analysis completed Tue Feb 05 16:44:34 2008 
+--------------------------------------------------------------------------------
+
+Trace Settings:
+-------------------------
+Trace Settings 
+
+Peak Memory Usage: 87 MB
+
+
+

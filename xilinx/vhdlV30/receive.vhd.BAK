@@ -1,0 +1,438 @@
+-----------------------------------------------------------------
+--                                                             --
+-----------------------------------------------------------------
+--
+--      receive.vhd - 
+--
+--      Copyright(c) SLAC 2000
+--
+--      Author: Jeff Olsen
+--      Created on: 10/23/2006 3:01:34 PM
+--      Last change: JO 10/26/2006 4:15:06 PM
+--
+-- 
+-- Created by Jeff Olsen 6/27/00
+--
+--  Filename: receive.vhd
+--
+--  Function:
+--  Receive bytes from rs232_rx and check packet validity
+--  
+--  Modifications:
+--
+-- 10/11/06
+-- This code is being modifed from the Franken Board code
+--
+
+
+Library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+use ieee.std_logic_arith.all;
+use ieee.numeric_std.all;
+ 
+
+library work;
+use work.bpm.all;
+
+Entity receive is
+
+Port (
+	CLK		: in std_logic;
+	Reset 	: in std_logic;
+	Parity 	: in std_logic;
+	DAV		: in std_logic;
+	DataIn 	: in std_logic_vector(7 downto 0);
+	Valid	: out std_logic;
+	Addr	: out std_logic_vector(7 downto 0);
+	Data	: out std_logic_vector(7 downto 0);
+    En		: out std_logic
+	);
+End receive;
+
+Architecture BEHAVIOUR of receive is
+
+Type receive_t is
+(
+	Wait_0,
+	Wait_X,
+	Wait_Addr1,
+	Wait_Addr2,
+	Wait_Byte,
+	Wait_CR,
+    BinaryIn,
+	Term
+);
+
+Signal ReceiveState : Receive_t;
+Signal NextState 	: Receive_t;
+
+Signal ByteCnt		: std_logic_vector(2 downto 0);
+Signal LdByteCnt	: std_logic;
+Signal DnByteCnt	: std_logic;
+Signal LdAddr		: std_logic;
+Signal LdCmd		: std_logic;
+Signal LdDat		: std_logic;
+
+Signal iValid		: std_logic;
+signal validByte 	: std_logic;
+signal tdiff 		: std_logic_vector(7 downto 0);
+signal TSub			: std_logic_vector(7 downto 0);
+signal dDAV 		: std_logic;
+signal Dav0			: std_logic;
+signal iData 		: std_logic_vector(7 downto 0);
+signal Rs232Rd		: std_logic;
+signal Read			: std_logic;
+signal iAddr 		: std_logic_vector(7 downto 0);
+signal LdBinaryAddr	: std_logic;
+signal LdBinaryData	: std_logic;
+
+
+Begin
+
+Data <= iData;
+Addr <= iAddr;
+
+
+Rs232Rd_p: Process(TDIff)
+Begin
+If (TDIFF(3) = '1')  then
+	Rs232Rd <= '1';
+else
+	Rs232Rd <= '0';
+end if;
+end process; --Rs232Rd_p:
+ 
+
+
+Sub_P: process(clk,reset)
+begin
+if (reset = '1') then
+	TDiff <= (Others => '0');
+elsIf (CLK'Event and CLK = '1') then
+	TDiff <= DataIn - TSub;
+end if;
+End Process; -- Sub_p
+
+ValidByte_p: Process( DataIn)
+Begin
+
+If ((DataIn >= "00110000") AND (DataIn <= "00111001")) then
+		TSub <= "00110000";
+		ValidByte <= '1';
+elsif	((DataIn >= "01000001") AND (DataIn <= "01000110")) then
+		TSub <=  "00110111";
+		ValidByte <= '1';
+else
+		TSub <= "00000000";
+		ValidByte <= '0';
+end if;
+
+end process; -- ValidByte_p
+
+Valid_p: Process(CLK, Reset)
+Begin
+If (Reset = '1') then
+	Valid <= '0';
+ElsIf (CLK'Event and CLK = '1') then
+	Valid <= iValid;
+end if;
+End Process; -- Valid_p
+
+dDAV_p: Process(CLK, Reset)
+Begin
+If (Reset = '1') then
+	dDAV <= '0';
+	Dav0 <= '0';
+Elsif (CLK'Event and CLK = '1') then
+	Dav0 <= DAV;
+	dDAV <= Dav0;
+end if;
+End Process; -- dDAV_p 
+
+
+Addr_p: Process(CLK, Reset)
+Begin
+If (Reset = '1') then
+	Read <= '0';
+	iAddr(7 downto 0) <= (Others => '0');
+ElsIf (CLK'Event and CLK = '1') then
+	if (LdAddr= '1') then
+		iAddr(7 downto 4) <= iAddr(3 downto 0);
+		iAddr(3 downto 0) <= TDiff(3 downto 0);
+
+		if (ReceiveState = Wait_Addr1) then
+			Read <= TDIFF(3);
+		end if;
+	end if;
+        if (LdBinaryAddr = '1') then
+                iAddr <= DataIn;
+                Read <= DataIn(6);
+        end if;
+end if;
+End Process; -- Addr_p
+
+
+ByteCnt_p: Process(CLK, Reset)
+Begin
+If (Reset = '1') then
+	ByteCnt <= (others => '0');
+ElsIf (CLK'Event and CLK = '1') then
+	If (LdByteCnt = '1') then
+		ByteCnt <= "001";
+	elsif (DnByteCnt = '1') then
+		ByteCnt <= ByteCnt - 1;
+	else
+		ByteCnt <= ByteCnt;
+	end if;
+end if;
+end process; -- BitCnt_p
+
+DataSR_p: Process(CLK, Reset)
+Begin
+If (Reset = '1') then
+	iData <= (Others => '0');
+ElsIf (CLK'Event and CLK = '1') then
+	If (LdDat = '1') then
+		iData(7 downto 4) <= iData(3 downto 0);
+		iData(3 downto 0) <= Tdiff(3 downto 0);
+	else
+		iData(7 downto 0) <= iData(7 downto 0);
+	end if;
+
+        if (LdBinaryData = '1') then
+                iData <= DataIn;
+        end if;
+end if;
+End Process; -- DataSr_p
+
+ReceiveSM: Process(CLK, Reset)
+Begin
+if (Reset = '1') then
+	ReceiveState <= Wait_0;
+ElsIf (CLK'Event and CLK = '1') then
+	ReceiveState <= NextState;
+end if;
+end process; -- ReceiveSM
+
+
+Tx_p: Process(ReceiveState, NextState, ByteCnt, dDAV, Parity, DATAIn, ValidByte, Rs232rd, Read)
+Begin
+Case ReceiveState is
+
+When Wait_0 =>
+    DnByteCnt 		<= '0';
+    LdByteCnt 		<= '1';
+    LdAddr			<= '0';
+    LdCmd			<= '0';
+    LdDat			<= '0';
+    iValid			<= '0';
+    LdBinaryAddr 	<= '0';
+    LdBinaryData 	<= '0';
+
+
+	If (dDAV = '1') then
+		if ((Parity = '0') and (DataIn = "00110000")) then
+        	En 			<= '0';
+			NextState 	<= Wait_X;
+		elsif ((Parity = '0') and (DataIn(7) = '1')) then -- Binary
+        	En 				<= '1';
+			LdBinaryAddr 	<= '1';
+			   if (DataIn(6) = '0') then -- Read
+			      NextState 		<= BinaryIn;
+			   else
+			      NextState <= Term;
+			   end if;
+		else
+        	En 				<= '0';
+			LdBinaryAddr 	<= '0';
+			NextState 		<= Wait_0;
+		end if;
+	else
+        	En 				<= '0';
+		   LdBinaryAddr 	<= '0';
+			NextState 		<= Wait_0;
+	end if;
+
+When Wait_X =>
+    DnByteCnt 		<= '0';
+    LdByteCnt 		<= '0';
+    LdAddr			<= '0';
+    LdCmd			<= '0';
+    LdDat			<= '0';
+    iValid			<= '0';
+    LdBinaryAddr 	<= '0';
+    LdBinaryData 	<= '0';
+    En 				<= '0';
+
+	If (dDAV = '1') then
+		if ((Parity = '0') and (DataIn = "01011000")) then
+			NextState <= Wait_Addr1;
+		else
+			NextState <= Wait_0;
+		end if;
+	else
+		NextState <= Wait_X;
+	end if;
+
+When Wait_Addr1 =>
+
+    DnByteCnt 		<= '0';
+    LdByteCnt 		<= '0';
+    LdCmd			<= '0';
+    LdDat			<= '0';
+    iValid			<= '0';
+    LdBinaryAddr 	<= '0';
+    LdBinaryData 	<= '0';
+    En 				<= '1';
+
+	If (dDAV = '1') then
+		if ((Parity = '0') and (ValidByte = '1')) then
+			LdAddr 		<= '1';
+			NextState 	<= Wait_Addr2;
+		else
+			LdAddr 		<= '0';
+			NextState 	<= Wait_0;
+		end if;
+	else
+		LdAddr 		<= '0';
+		NextState 	<= Wait_Addr1;
+	end if;
+
+When Wait_Addr2 =>
+
+    DnByteCnt 		<= '0';
+    LdByteCnt 		<= '1';
+    LdCmd			<= '0';
+    LdDat			<= '0';
+    iValid			<= '0';
+    LdBinaryAddr 	<= '0';
+    LdBinaryData 	<= '0';
+    En 				<= '1';
+
+	If (dDAV = '1') then
+		if ((Parity = '0') and (ValidByte = '1')) then
+			LdAddr <= '1';
+			if (Read = '1') then
+				NextState <= Wait_CR;
+			else
+				NextState <= Wait_Byte;
+			end if;
+		else
+			LdAddr 		<= '0';
+			NextState 	<= Wait_0;
+		end if;
+	else
+		LdAddr 		<= '0';
+		NextState 	<= Wait_Addr2;
+	end if;
+
+
+When Wait_Byte =>
+    LdByteCnt 		<= '0';
+    LdAddr			<= '0';
+    LdCmd			<= '0';
+    iValid			<= '0';
+    LdBinaryAddr 	<= '0';
+    LdBinaryData 	<= '0';
+    En 				<= '1';
+
+	If (dDAV = '1') then
+		DnByteCnt 	<= '1';
+		if ((Parity = '0') and (ValidByte = '1')) then
+			LdDat <= '1';
+			if (ByteCnt = "000") then
+				NextState <= Wait_CR;
+			else
+				NextState <= Wait_Byte;
+			end if;
+		else
+			LdDat 		<= '0';
+			NextState 	<= Wait_0;
+		end if;
+	else
+		DnByteCnt 	<= '0';
+		LdDat		<= '0';
+		NextState 	<= Wait_Byte;
+	end if;
+
+When Wait_CR =>
+    DnByteCnt 		<= '0';
+    LdByteCnt 		<= '0';
+    LdDat			<= '0';
+    LdAddr			<= '0';
+    LdCmd			<= '0';
+    iValid			<= '0';
+    LdBinaryAddr 	<= '0';
+    LdBinaryData 	<= '0';
+    En 				<= '1';
+
+	If (dDAV = '1') then
+		if ((Parity = '0') and (DataIn = "00001101")) then
+			NextState <= Term;
+		else
+			NextState <= Wait_0;
+		end if;
+	else
+		NextState <= Wait_CR;
+	end if;
+
+When BinaryIn =>
+    DnByteCnt 		<= '0';
+    LdByteCnt 		<= '0';
+    LdDat			<= '0';
+    LdAddr		    <= '0';
+    LdCmd			<= '0';
+    iValid		    <= '0';
+    DnByteCnt 		<= '0';
+	 LdBinaryAddr 	<= '0';
+    En 				<= '1';
+
+    If (dDAV = '1') then
+		if ((Parity = '0') and (DataIn(7) = '0')) then
+			LdBinaryData <= '1';
+			NextState 		<= Term;
+		else
+			LdBinaryData 	<= '0';
+			NextState 		<= Wait_0;
+		end if;
+	else
+		LdBinaryData 	<= '0';
+		NextState 		<= BinaryIn;
+	end if;
+
+When Term =>
+    DnByteCnt 		<= '0';
+    LdByteCnt 		<= '0';
+    LdDat			<= '0';
+    LdAddr			<= '0';
+    LdCmd			<= '0';
+    iValid			<= '1';
+    LdBinaryAddr 	<= '0';
+     LdBinaryData 	<= '0';
+   En 				<= '1';
+
+    NextState 		<= Wait_0;
+
+
+
+When Others =>
+    DnByteCnt 		<= '0';
+    LdByteCnt 		<= '0';
+    LdDat			<= '0';
+    LdAddr			<= '0';
+    LdCmd			<= '0';
+    iValid			<= '0';
+    LdBinaryAddr 	<= '0';
+    LdBinaryData 	<= '0';
+    En 				<= '0';
+
+    NextState 		<= Wait_0;
+
+
+
+End Case;
+end process; -- receive
+
+End Behaviour;
+

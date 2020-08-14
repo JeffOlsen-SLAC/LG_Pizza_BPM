@@ -1,0 +1,30 @@
+Number of Timing Constraints that were not applied: 1
+
+Asterisk (*) preceding a constraint indicates it was not met.
+   This may be due to a setup or hold violation.
+
+------------------------------------------------------------------------------------------------------
+  Constraint                                |  Check  | Worst Case |  Best Case | Timing |   Timing   
+                                            |         |    Slack   | Achievable | Errors |    Score   
+------------------------------------------------------------------------------------------------------
+* TS_u_clk2x_CLK2X_BUF = PERIOD TIMEGRP "u_ | SETUP   |    -0.187ns|     8.520ns|       2|         235
+  clk2x_CLK2X_BUF" TS_Local_Clock * 2       | HOLD    |     0.499ns|            |       0|           0
+     HIGH 50%                               |         |            |            |        |            
+------------------------------------------------------------------------------------------------------
+  TS_Qspi_CLK = PERIOD TIMEGRP "Qspi_CLK" 2 | SETUP   |    21.907ns|     6.600ns|       0|           0
+  0 MHz HIGH 50%                            | HOLD    |     0.813ns|            |       0|           0
+------------------------------------------------------------------------------------------------------
+  TS_u_clkdiv3_CLKDV_BUF = PERIOD TIMEGRP " | SETUP   |    31.525ns|    18.475ns|       0|           0
+  u_clkdiv3_CLKDV_BUF" TS_Local_Clock /     | HOLD    |     0.499ns|            |       0|           0
+       3 HIGH 50%                           |         |            |            |        |            
+------------------------------------------------------------------------------------------------------
+  TS_Local_Clock = PERIOD TIMEGRP "Local_Cl | N/A     |         N/A|         N/A|     N/A|         N/A
+  ock" 60 MHz HIGH 50%                      |         |            |            |        |            
+------------------------------------------------------------------------------------------------------
+
+
+1 constraint not met.
+INFO:Timing:2761 - N/A entries in the Constraints list may indicate that the 
+   constraint does not cover any paths or that it has no requested value.
+
+

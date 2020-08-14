@@ -1,0 +1,234 @@
+-----------------------------------------------------------------
+--                                                             --
+-----------------------------------------------------------------
+--
+--  bpm_reg.vhd - 
+--
+--  Copyright(c) Stanford Linear Accelerator Center 2000
+--
+--  Author: JEFF OLSEN
+--  Created on: 8/4/2006 9:52:00 AM
+--  Last change: JO 12/13/2007 4:58:55 PM
+--
+
+Library work;
+use work.bpm.all;
+
+Library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+
+
+
+Entity bpm_reg is
+Port (
+	Clock 		: in std_logic;
+	Reset 		: in std_logic;
+	Address		: in std_logic_vector(7 downto 0);
+	Write_Strb	: in std_logic;
+	DataIn		: in std_logic_vector(7 downto 0);
+	DataOut		: out std_logic_vector(7 downto 0);
+
+	-- CSR 0
+	ModeSel		: out std_logic_vector(1 downto 0);
+
+	-- CAL
+	CalATT		: out std_logic_vector(4 downto 0);
+
+	-- ATT
+	ATT1			: out std_logic_vector(3 downto 0);
+	ATT2			: out std_logic_vector(4 downto 0);
+
+	-- LMT
+	Trip			: in std_logic;
+
+	-- Trig
+	Trig			: out std_logic;
+
+	-- Cal Sequencer
+	TRIG2AMP 	: out std_logic_vector(7 downto 0);
+	AMP2RF1		: out std_logic_vector(7 downto 0);
+	RF12RF2		: out std_logic_vector(7 downto 0);
+	RFWIDTH		: out std_logic_vector(7 downto 0);
+	OFFTIME		: out std_logic_vector(7 downto 0);
+
+
+	-- JTAG
+	TMS			: out std_logic;
+	TCK			: out std_logic;
+	TDI			: out std_logic; -- to PROM TDI
+	TDO			: in std_logic;  -- from PROM TDO
+	Sel_Sec		: out std_logic;
+	Sel_Clk		: out std_logic;
+	Reboot		: out std_logic;
+	Lmtr_Long	: out std_logic;
+	Lmtr_Short 	: out std_logic
+	);
+end bpm_reg ;
+
+Architecture Behaviour of bpm_reg is
+
+signal CSRReg 	: std_logic_vector(5 downto 0);
+signal CALReg 	: std_logic_vector(4 downto 0);
+signal ATT1Reg : std_logic_vector(3 downto 0);
+signal ATT2Reg : std_logic_vector(3 downto 0);
+signal LMTReg 	: std_logic;
+signal BootReg : std_logic_Vector(2 downto 0);
+signal JTAGReg : std_logic_Vector(2 downto 0);
+
+signal iAddress : std_logic_Vector(7 downto 0);
+
+signal Trig2AMP_Reg 	: std_logic_Vector(7 downto 0);
+signal AMP2RF1_Reg 	: std_logic_Vector(7 downto 0);
+signal RF12RF2_Reg 	: std_logic_Vector(7 downto 0);
+signal RFWidth_Reg 	: std_logic_Vector(7 downto 0);
+signal OffTime_Reg 	: std_logic_Vector(7 downto 0);
+
+
+Begin
+-- 01/18/07 jjo
+-- Added registers
+
+-- MSB is Read/Write
+iAddress <= "00" & Address(5 downto 0);
+
+Lmtr_Long	<= CSRReg(5);
+Lmtr_Short 	<= CSRReg(4);
+
+ModeSel 	<= CSRReg(1 downto 0);
+CalATT 	<= CALReg(4 downto 0);
+ATT1 		<= ATT1Reg(3 downto 0);
+ATT2 		<= ATT2Reg(3 downto 0);
+
+Reboot 	<= BootReg(2);
+Sel_Sec 	<= BootReg(1);
+Sel_Clk 	<= BootReg(0);
+
+TCK 		<= JTAGReg(2);
+TDI 		<= JTAGReg(1);
+TMS 		<= JTAGReg(0);
+
+TRIG2AMP <= TRIG2AMP_Reg;
+AMP2RF1  <= AMP2RF1_Reg;
+RF12RF2  <= RF12RF2_Reg;
+RFWIDTH  <= RFWidth_Reg;
+OFFTIME  <= OFFTIME_Reg;
+
+
+WriteReg_p: process(Clock, Reset)
+Begin
+if (Reset = '1') then
+	CSRReg			<= "000010";
+	CALReg			<= "11111";
+	ATT1Reg 			<= "1111";
+	ATT2Reg 			<= "1111";
+	LMTReg			<= '0';
+	BootReg 			<= "000";
+
+	Trig2AMP_Reg 	<= Trig2AMP_Default;
+	AMP2RF1_Reg 	<= AMP2RF1_Default;
+	RF12RF2_Reg 	<= RF12RF2_Default;
+	RFWidth_Reg 	<= RFWidth_Default;
+	OffTime_Reg 	<= OffTime_Default;
+
+	JTAGReg 			<= "000";
+	Trig				<= '0';
+
+elsif (clock'event and clock = '1') then
+if (Write_Strb = '1') then
+	Case iAddress is
+	When CSR_Addr =>
+		CSRReg <= DataIn(5 downto 0);
+	When CAL_Addr =>
+		If (DataIn > x"1F") then
+			CALReg <= x"0F";
+		else
+			CALReg <= DataIn(4 downto 0);
+		end if;
+	When ATT1_Addr =>
+		If (DataIn > x"0F") then
+			ATT1Reg <= x"0F";
+		else
+			ATT1Reg <= DataIn(3 downto 0);
+		end if;
+	When ATT2_Addr =>
+		If (DataIn > x"1F") then
+			ATT2Reg <= x"1F";
+		else
+			ATT2Reg <= DataIn(3 downto 0);
+		end if;
+
+	When LMT_Addr =>
+		LMTReg <=  ((LMTReg OR Trip) AND NOT(DataIn(0)));
+	When TRG_Addr =>
+		Trig <= '1';
+
+	When Trig2AMP_Addr =>
+		Trig2AMP_Reg <=  DataIn(7 downto 0);
+	When AMP2RF1_Addr =>
+		AMP2RF1_Reg <=	 DataIn(7 downto 0);
+	When RF12RF2_Addr =>
+		RF12RF2_Reg <=	 DataIn(7 downto 0);
+	When RFWidth_Addr =>
+		RFWidth_Reg <=	 DataIn(7 downto 0);
+	When OffTime_Addr =>
+		OffTime_Reg <=	 DataIn(7 downto 0);
+
+	When Boot_Addr =>
+		BootReg <= DataIn(2 downto 0);
+	When JTAG_Addr =>
+		JTAGReg <= DataIn(2 downto 0);
+	When Others =>
+		Trig <= '0';
+   end case;
+else
+	Trig <= '0';
+end if;
+end if;
+end process; --WriteReg_p
+
+ReadReg_p: process(iAddress, CSRReg, CALReg, ATT1Reg, ATT2Reg,
+					LMTReg, JTAGReg, TDO, BootReg,  Trig2AMP_Reg, 
+					AMP2RF1_Reg, RF12RF2_Reg, RFWidth_Reg, OffTime_Reg )
+Begin
+	Case iAddress is
+    When CSR_Addr =>
+    	DataOut <= "00" & CSRReg(5 downto 3) & '0' & CSRReg(1 downto 0);
+	When CAL_Addr =>
+    	DataOut <= "000" & CALReg(4 downto 0);
+    When ATT1_Addr =>
+    	DataOut <= "0000" & ATT1Reg;
+    When ATT2_Addr =>
+    	DataOut <= "000" & ATT2Reg;
+    When LMT_Addr =>
+    	DataOut <= "0000000" & LMTReg;
+    When VER_Addr =>
+		DataOut <= "0" & Version;
+
+	When Trig2AMP_Addr =>
+    	DataOut <= Trig2AMP_Reg;
+	When AMP2RF1_Addr =>
+    	DataOut <= AMP2RF1_Reg;
+	When RF12RF2_Addr =>
+    	DataOut <= RF12RF2_Reg;
+	When RFWidth_Addr =>
+    	DataOut <= RFWidth_Reg;
+	When OffTime_Addr =>
+    	DataOut <= OffTime_Reg;
+
+
+	When Boot_Addr =>
+		DataOut <= "00000" & BootReg;
+    When JTAG_Addr =>
+    	DataOut <= "0000" & TDO & JTAGReg(2 downto 0);
+    When Others =>
+    	DataOut <= (Others => '0');
+    end case;
+
+end process; --ReadReg_p
+
+end Behaviour;
+
+
+
+

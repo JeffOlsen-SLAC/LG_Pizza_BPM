@@ -1,0 +1,323 @@
+-- 
+-- Created by Jeff Olsen 6/27/00
+--
+--  Filename: RS232_rx.vhd
+--
+--  Function:
+--  Receive 19.2KBd Serial Data using 20Mhz clk
+--  
+--  Modifications:
+--  03/15/02 jjo
+--  Added 9600 baud rate
+--  Increased NBitWidth from 11 to 12
+
+Library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+use ieee.std_logic_arith.all;
+use ieee.numeric_std.all;
+
+library work;
+use work.bpm.all;
+
+Entity rs232_rx is
+
+Port (
+	RxCLK		: in std_logic;
+	Reset 	: in std_logic;
+	RxDin 	: in std_logic;
+	RxData 	: out std_logic_vector(7 downto 0);
+	RxDone	: out std_logic;
+	RxParity	: out std_logic
+	);
+End rs232_rx;
+
+Architecture BEHAVIOUR of rs232_rx is
+
+-- 03/15/02 changed NbitWidth from 10 to 11
+
+Constant NBits		: integer := 10; -- N-1
+Constant NBitwidth 	: integer := 11; -- N-1
+Constant NBitCnt		: integer := 3;
+
+-- 9600kBd
+--Constant BitWidth 	: std_logic_vector(NBitWidth downto 0)  := "100000100011"; -- 2083 (823)
+--Constant BitWidth2 	: std_logic_vector(NBitWidth downto 0)  := "010000010001"; 
+
+
+-- 19200kBd
+--Constant BitWidth 	: std_logic_vector(NBitWidth downto 0)  := "010000010010"; -- 1042 (412)
+--Constant BitWidth2 	: std_logic_vector(NBitWidth downto 0)  := "001000001001"; 
+
+-- 38400kBd
+--Constant BitWidth 	: std_logic_vector(NBitWidth downto 0)  := "010100100000"; -- 520 (208)
+--Constant BitWidth2 	: std_logic_vector(NBitWidth downto 0)  := "001010010000"; 
+
+-- 57600kBd
+--Constant BitWidth 	: std_logic_vector(NBitWidth downto 0)  := "000101011011"; -- 347 (15B)
+--Constant BitWidth2 	: std_logic_vector(NBitWidth downto 0)  := "000010101101"; 
+
+-- 115200kBd
+Constant BitWidth 	: std_logic_vector(NBitWidth downto 0)  := "000010101110"; -- 174 (AE)
+Constant BitWidth2 	: std_logic_vector(NBitWidth downto 0)  := "000001010111"; 
+
+
+Type RXState_t is
+(
+	Idle,
+	Start,
+	Rx,
+	Term
+);
+
+Signal RXState 		: RXState_t;
+Signal NextState 		: RXState_t;
+
+Signal RxSR			: std_logic_vector(NBits downto 0);
+Signal EnRxSr		: std_logic;
+
+signal LdParity 		: std_logic;
+signal EnParity		: std_logic;
+signal iRxParity		: std_logic;
+
+Signal BitWidthCnt	: std_logic_vector(NbitWidth downto 0);
+Signal NextWidthCnt	: std_logic_vector(NBitWidth downto 0);
+Signal LdBitWidthCnt	: std_logic;
+Signal DnBitWidthCnt	: std_logic;
+
+Signal BitCnt		: std_logic_vector(NBitCnt downto 0);
+Signal LdBitCnt		: std_logic;
+Signal DnBitCnt		: std_logic;
+
+Signal iRxDone		: std_logic;
+signal iRxData		: std_logic_vector(7 downto 0);
+
+Signal IFilter		: std_logic_vector(3 downto 0);
+Signal FDIN			: std_logic;
+
+Begin
+
+
+RxData <= iRxData;
+RxParity <= iRxParity;
+
+Filter: Process(RxCLK, Reset)
+Begin
+If (Reset = '1') then
+	iFilter <= "0000";
+ElsIf (RxCLK'Event and RxCLK = '1') then
+		iFilter(0) <= RxDin;
+		iFilter(3 downto 1) <= iFilter(2 downto 0);
+end if;
+End Process; --Filter
+
+FDin_p: Process(RxCLK, Reset)
+Begin
+If (Reset = '1') then
+	FDin <= '0';
+ElsIf (RxCLK'Event and RxCLK = '1') then
+	If	(iFilter = "1111") then
+		FDin <= '1';
+	elsif (iFilter = "0000") then
+		FDin <= '0';
+	else
+		FDin <= FDin;
+	end if;
+end if;
+end process; -- FDin_p	
+	
+RxDone_p: Process(RxCLK, Reset)
+Begin
+if (reset = '1') then
+	RxDone <= '0';
+ElsIf (RxCLK'Event and RxCLK = '1') then
+	RxDone <= iRxDone;
+end if;
+End Process; -- RxDone_p
+
+Parity_p: Process(RxCLK, Reset)
+Begin
+If (Reset = '1') then
+	iRxParity <= '0';
+ElsIf (RxCLK'Event and RxCLK = '1') then
+	If (LdParity = '1') then
+		iRxParity <= '1';
+	elsif (EnParity = '1') then
+		iRxParity <= (iRxParity XOR FDin);
+	else
+		iRxParity <= iRxParity;
+	end if;
+end if;
+End Process; -- Parity_p
+
+BitCnt_p: Process(RxCLK, Reset)
+Begin
+If (Reset = '1') then
+	BitCnt <= (others => '0');
+ElsIf (RxCLK'Event and RxCLK = '1') then
+	If (LdBitCnt = '1') then
+		BitCnt <= "1010";
+	elsif (DnBitCnt = '1') then
+		BitCnt <= BitCnt - 1;
+	else
+		BitCnt <= BitCnt;
+	end if;
+end if;
+end process; -- BitCnt_p
+
+BitWidthCnt_p: Process(RxCLK, Reset)
+Begin
+If (Reset = '1') then
+	BitWidthCnt <= (others => '0');
+ElsIf (RxCLK'Event and RxCLK = '1') then
+	If (LdBitWidthCnt = '1') then
+		BitWidthCnt <= NextWidthCnt;
+	elsif (DnBitWidthCnt = '1') then
+		BitWidthCnt <= BitWidthCnt - 1;
+	else
+		BitWidthCnt <= BitWidthCnt;
+	end if;
+end if;
+end process; -- BitWidthCnt_p
+
+
+
+-- LSB first for RS232
+
+RxSr_p: Process(RxCLK, Reset)
+Begin
+If (Reset = '1') then
+	RxSR <= (others => '0');
+Elsif (RxCLK'Event and RxCLK = '1') then
+	If (EnRxSR = '1') then
+		RxSR(NBits-1 downto 0) <= RxSR(NBits downto 1) ;
+		RxSr(NBits) <= FDin;
+	else 
+		RxSR <= RxSR;
+	end if;
+end if;
+end process; -- TxSR_p
+
+
+RxData_p: Process(RxCLK, Reset)
+Begin
+If (Reset = '1') then
+	iRxData <= (Others => '0');
+ElsIf (RxCLK'Event and RxCLK = '1') then
+	If (iRxDone = '1') then
+		iRxData(7 downto 0) <= not(RxSr(8 downto 1));
+	else
+		iRxData <= iRxData;
+	end if;
+end if;
+end Process; -- RxData
+
+RxSm: Process(RxCLK, Reset)
+Begin
+If (Reset = '1') then
+	RxState <= IDLE;
+ElsIf (RxCLK'Event and RxCLK = '1') then
+		RxState <= NextState;
+end if;
+end process; -- RxSM
+
+
+Tx_p: Process(RxState, NextState, BitCnt, BitWidthCnt, FDIN)
+Begin
+Case RxState is
+
+When Idle =>
+		DnBitCnt 		<= '0';
+		DnBitWidthCnt 	<= '0';
+		LdBitWidthCnt 	<= '1';
+		EnRxSr 		<= '0';
+		LdParity 		<= '0';
+		EnParity 		<= '0';
+		iRxDone 		<= '0';
+		NextWidthCnt 	<= BitWidth2;
+		If (FDin = '1') then
+			LdBitCnt 	<= '1';
+			NextState 	<= Start;
+		else
+			LdBitCnt 	<= '0';
+			NextState 	<= Idle;
+		end if;
+
+When Start =>
+		iRxDone 		<= '0';
+		LdBitCnt 		<= '0';
+		EnParity 		<= '0';
+		NextWidthCnt 	<= BitWidth;
+		If (BitWidthCnt = "00000") then
+			LdParity 		<= '1';
+			EnRxSr 		<= '1';
+			DnBitWidthCnt 	<= '0';
+			LdBitWidthCnt 	<= '1';
+			DnBitCnt 		<= '1';
+			NextState 		<= Rx;
+		else
+			LdParity 		<= '0';
+			EnRxSr 		<= '0';
+			DnBitWidthCnt 	<= '1';
+			LdBitWidthCnt 	<= '0';
+			DnBitCnt 		<= '0';
+			NextState 		<= Start;
+		end if;
+
+When Rx =>
+		iRxDone 		<= '0';
+		LdBitCnt 		<= '0';
+		NextWidthCnt 	<= BitWidth;
+		If (BitWidthCnt = "00000") then
+			LdParity 		<= '0';
+			EnParity 		<= '1';
+			EnRxSr 		<= '1';
+			DnBitWidthCnt 	<= '0';
+			LdBitWidthCnt 	<= '1';
+			DnBitCnt 		<= '1';
+			if (BitCnt = "0000") then
+				NextState 	<= Term;
+			Else
+				NextState 	<= Rx;
+			end if;
+		else
+			LdParity 		<= '0';
+			EnParity 		<= '0';
+			EnRxSr 		<= '0';
+			DnBitWidthCnt 	<= '1';
+			LdBitWidthCnt 	<= '0';
+			DnBitCnt 		<= '0';
+			NextState 		<= Rx;
+
+		end if;
+
+When Term =>
+		iRxDone 		<= '1';
+		LdBitCnt 		<= '0';
+		DnBitCnt 		<= '0';
+		EnRxSr 		<= '0';
+		LdParity 		<= '0';
+		EnParity 		<= '0';
+		DnBitWidthCnt 	<= '0';
+		LdBitWidthCnt 	<= '0';
+		NextWidthCnt 	<= BitWidth;
+		NextState	 	<= Idle;
+	
+When Others =>
+		iRxDone 		<= '0';
+		LdBitCnt 		<= '0';
+		DnBitCnt 		<= '0';
+		EnRxSr 		<= '0';
+		LdParity 		<= '0';
+		EnParity 		<= '0';
+		DnBitWidthCnt 	<= '0';
+		LdBitWidthCnt 	<= '0';
+		NextWidthCnt 	<= BitWidth;
+		NextState	 	<= Idle;
+	
+
+End Case;
+end process; -- Tx_P
+
+End Behaviour;
+

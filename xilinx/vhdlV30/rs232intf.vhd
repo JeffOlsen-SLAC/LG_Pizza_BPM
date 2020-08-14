@@ -1,0 +1,117 @@
+-----------------------------------------------------------------
+--                                                             --
+-----------------------------------------------------------------
+--
+--      rs232intf-
+--
+--      Copyright(c) SLAC 2000
+--
+--      Author: Jeff Olsen
+--      Created on: 10/24/2006 9:54:02 AM
+--      Last change: JO 1/18/2007 3:32:01 PM
+--
+
+
+
+Library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
+use ieee.std_logic_arith.all;
+use ieee.numeric_std.all;
+ 
+
+library work;
+use work.bpm.all;
+
+Entity rs232intf is
+
+Port (
+	Clk			: in std_logic;
+	Reset 		: in std_logic;
+
+-- Receiver
+	Rx				: in std_logic;
+	RxDataOut 	: out std_logic_vector(7 downto 0);
+	RxAddrOut 	: out std_logic_vector(7 downto 0);
+	WriteStrb	: out std_logic;
+	
+	-- Transmitter
+	TxDataIn 	: in std_logic_vector(7 downto 0);
+	Tx				: out std_logic;
+	En				: out std_logic
+);
+End rs232intf;
+
+
+Architecture BEHAVIOUR of rs232intf is
+
+signal RxDataIn 	: std_logic_vector(7 downto 0);
+signal RxDone 		: std_logic;
+signal RxParity 	: std_logic;
+signal TxDone 		: std_logic;
+signal TxSend 		: std_logic;
+signal TxDataOut 	: std_logic_vector(7 downto 0);
+signal RxDav 		: std_logic;
+signal TxDav 		: std_logic;
+signal EnTx 		: std_logic;
+signal EnRx 		: std_logic;
+signal iRxAddrOut : std_logic_vector(7 downto 0);
+
+begin
+
+WriteStrb 	<= RxDav AND NOT(iRxAddrOut(6));
+En 			<= EnTx OR EnRx;
+RxAddrOut 	<= iRxAddrOut;
+
+TxDav 		<= RxDav AND iRxAddrOut(6);
+
+u_Rx: rs232_rx
+Port map (
+	RxClk 		=> Clk,
+	Reset 		=> Reset,
+	RxDin 		=> Rx,
+	RxData 		=> RxDataIn,
+	RxDone		=> RxDone,
+	RxParity 	=> RxParity
+	);
+
+u_Receive: receive
+Port map (
+	CLK		=> Clk,
+	Reset 	=> Reset,
+	Parity 	=> RxParity,
+	DAV		=> RxDone,
+	DataIn 	=> RxDataIn,
+	Valid		=> RxDav,
+	Addr		=> iRxAddrOut,
+	Data		=> RxDataOut,
+   En			=> EnRx
+	);
+
+
+u_transmit: transmit
+Port map (
+	CLK		=> clk,
+	Reset 	=> reset,
+	NewData	=> TxDav,
+	DataIn	=> TxDataIn,
+	Addr		=> iRxAddrOut,
+	DataOut	=> TxDataOut,
+	TxDone	=> TxDone,
+	Xmit		=> TxSend,
+   EnDout	=> EnTx
+	);
+
+
+u_Tx: rs232_tx
+Port map (
+	TxCLK		=> clk,
+	Reset 	=> reset,
+	Xmit		=> TxSend,
+	Data		=> TxDataOut,
+	TxDone	=> TxDone,
+	TxOut		=> Tx
+	);
+
+End Behaviour;
+
